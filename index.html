@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script src="./js/main.js" type="module" defer></script>
+  
+  <title>Filmov</title>
+</head>
+<body>
+  <div id="app">
+    <header>
+      <img src="./assets/logo-filmov.svg" alt="logo filmov">
+      <div class="search">
+        <div class="clear">
+          <button>CLEAR</button>
+        </div>
+        <label class="sr-only" for="search-input">Type a movie title</label>
+        <input id="search-input" type="text" placeholder="Type a movie title">
+        <button class="fav-button">FAV</button>
+      </div>
+    </header>
+
+    <table cellspacing="0">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Title</th>
+          <th>Year</th>
+          <th>Runtime</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody></tbody>
+
+      <tfoot class="no-favorites">
+        <tr>
+          <td colspan="5">
+            <div>
+              <i class="ph ph-star-half"></i>
+              <span>Has no favorites yet</span>
+            </div>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</body>
+</html>
