@@ -14,7 +14,7 @@ Filmov is a web application for bookmarking movies using the OMDB public API.<br
 <br>
 
 <p align="center">
-  <img alt="Filmov project" src="https://i.imgur.com/DFWbwU6.png" width="100%">
+  <img alt="Filmov project" src="https://i.imgur.com/CHW8r42.png" width="100%">
 </p>
 <p align="center">
   <img alt="Filmov project" src="https://i.imgur.com/7h8zPSs.png" width="50%">
