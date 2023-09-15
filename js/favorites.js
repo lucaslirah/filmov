@@ -60,7 +60,6 @@ export class Favorites{
   deleteMovie(movie){
     const filteredMovieEntries = this.movieEntries.filter(movieEntry => movieEntry.Title !== movie.Title)
 
-    console.log(filteredMovieEntries)
     this.movieEntries = filteredMovieEntries
 
     this.save()
