@@ -72,6 +72,13 @@ header{
   align-items: initial;
   gap: 1.2rem;
 }
+.search-input-wrapper {
+  position: relative;
+  width: 30rem;
+}
+.search input {
+  width: 100%;
+}
 .search input, .search button{
   padding: 1rem;
 
@@ -79,6 +86,77 @@ header{
 
   border: none;
   border-radius: 0.8rem;
+}
+
+/* Autocomplete search suggestions styling */
+.search-suggestions {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  left: 0;
+  width: 100%;
+  max-height: 25rem;
+  overflow-y: auto;
+  background-color: #0f140f;
+  border: 1px solid var(--border-color);
+  border-radius: 0.8rem;
+  z-index: 10;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
+}
+
+.search-suggestions.hide {
+  display: none;
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 0.8rem 1.2rem;
+  cursor: pointer;
+  border-bottom: 1px solid hsla(var(--bg-color-base), 33%, 61%, 0.15);
+  transition: background-color 0.2s ease;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-item:hover {
+  background-color: hsla(var(--bg-color-base), 30%, 27%, 0.8);
+}
+
+.suggestion-poster {
+  width: 3.5rem;
+  height: 5rem;
+  object-fit: cover;
+  border-radius: 0.4rem;
+  background-color: var(--bg-color-primary);
+}
+
+.suggestion-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  text-align: left;
+}
+
+.suggestion-title {
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: var(--fc-primary);
+  line-height: 1.2;
+}
+
+.suggestion-year {
+  font-size: 1.2rem;
+  color: var(--fc-secondary);
+}
+
+.suggestion-no-results {
+  padding: 1.5rem;
+  text-align: center;
+  font-size: 1.4rem;
+  color: var(--fc-secondary);
 }
 .search input::placeholder{
   color: var(--fc-secondary);
@@ -211,7 +289,7 @@ tfoot{
     width: 100%;
   }
 
-  .search input {
+  .search-input-wrapper {
     grid-column: 1 / -1;
     order: 1;
     width: 100%;

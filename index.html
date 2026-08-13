@@ -26,12 +26,16 @@
           <div class="clear">
             <button>CLEAR</button>
           </div>
-          <label class="sr-only" for="search-input">Type a movie title</label>
-          <input
-            id="search-input"
-            type="text"
-            placeholder="Type a movie title"
-          />
+          <div class="search-input-wrapper">
+            <label class="sr-only" for="search-input">Type a movie title</label>
+            <input
+              id="search-input"
+              type="text"
+              placeholder="Pesquise em português ou inglês..."
+              autocomplete="off"
+            />
+            <div id="search-suggestions" class="search-suggestions hide"></div>
+          </div>
           <button class="fav-button">FAV</button>
         </div>
       </header>

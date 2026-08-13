@@ -24,8 +24,8 @@ export class Favorites{
       const isOk = confirm('Are you sure to remove all favorites?')
       
       if(isOk){
-        localStorage.removeItem('@OMDB-movies-favorites:', JSON.stringify(this.movieEntries))
-
+        localStorage.removeItem('@OMDB-movies-favorites:')
+        this.movieEntries = []
         this.removeAllTr()
         this.load()
       }
@@ -44,6 +44,12 @@ export class Favorites{
       
       if(movie.Title === undefined){
         throw new Error('Movie not found!')
+      }
+
+      // Check for duplicates again in case user clicked same movie through different title/id
+      const duplicateByIdOrTitle = this.movieEntries.find(entry => entry.Title.toLowerCase() === movie.Title.toLowerCase())
+      if(duplicateByIdOrTitle){
+        throw new Error('Movie already added.')
       }
 
       this.movieEntries = [ movie, ...this.movieEntries ]
@@ -77,15 +83,20 @@ export class FavoritesView extends Favorites{
     this.update()
     this.onadd()
     this.onEnter()
+    this.onInput()
   }
 
   onadd(){
     const favButton = this.root.querySelector('.fav-button')
     favButton.onclick = () => {
-      const { value } = this.root.querySelector('#search-input')
-      this.addMovie(value)
+      const searchInput = this.root.querySelector('#search-input')
+      const { value } = searchInput
+      if(value.trim()){
+        this.addMovie(value)
+        searchInput.value = ''
+        this.hideSuggestions()
+      }
     }
-    
   }
 
   update(){
@@ -138,27 +149,121 @@ export class FavoritesView extends Favorites{
   }
   
   removeAllTr(){
-    this.tbody.querySelectorAll('tr').forEach(tr => tr.remove())
+    if(this.tbody){
+      this.tbody.querySelectorAll('tr').forEach(tr => tr.remove())
+    }
   }
 
   showOrHideNoFavorites(){
     const noFavorites = this.root.querySelector('.no-favorites')
     
-    if(this.movieEntries == 0){
+    if(!noFavorites) return
+
+    if(this.movieEntries.length === 0){
       noFavorites.classList.remove('hide')
     }else{
       noFavorites.classList.add('hide')
     }
   }
 
-  // evento de botao enter, procurar ao pressionar
   onEnter(){
     const searchInput = this.root.querySelector('#search-input')
     searchInput.addEventListener('keydown', (event) => {
       if(event.key === 'Enter'){
-        const { value } = this.root.querySelector('#search-input')
-        this.addMovie(value)
+        const { value } = searchInput
+        if(value.trim()){
+          this.addMovie(value)
+          searchInput.value = ''
+          this.hideSuggestions()
+        }
       }
     })
+  }
+
+  onInput() {
+    const searchInput = this.root.querySelector('#search-input')
+    let timeoutId
+
+    searchInput.addEventListener('input', () => {
+      clearTimeout(timeoutId)
+      const query = searchInput.value.trim()
+
+      if(query.length < 2) {
+        this.hideSuggestions()
+        return
+      }
+
+      timeoutId = setTimeout(() => {
+        this.fetchAndShowSuggestions(query)
+      }, 300)
+    })
+
+    searchInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        this.hideSuggestions()
+      }
+    })
+
+    document.addEventListener('click', (event) => {
+      const suggestions = this.root.querySelector('#search-suggestions')
+      const searchInput = this.root.querySelector('#search-input')
+      if(suggestions && !suggestions.contains(event.target) && event.target !== searchInput) {
+        this.hideSuggestions()
+      }
+    })
+  }
+
+  hideSuggestions() {
+    const suggestions = this.root.querySelector('#search-suggestions')
+    if(suggestions) {
+      suggestions.classList.add('hide')
+      suggestions.innerHTML = ''
+    }
+  }
+
+  async fetchAndShowSuggestions(query) {
+    const suggestions = this.root.querySelector('#search-suggestions')
+    if(!suggestions) return
+    
+    try {
+      const movies = await MovieData.searchList(query)
+      suggestions.innerHTML = ''
+
+      if(movies.length === 0) {
+        const noResults = document.createElement('div')
+        noResults.className = 'suggestion-no-results'
+        noResults.textContent = 'Nenhum filme encontrado.'
+        suggestions.appendChild(noResults)
+      } else {
+        movies.forEach(movie => {
+          const item = document.createElement('div')
+          item.className = 'suggestion-item'
+          
+          const posterSrc = movie.Poster !== 'N/A' ? movie.Poster : 'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?auto=format&fit=crop&w=80&q=80'
+          const displayTitle = movie.TitlePT || movie.Title
+          
+          item.innerHTML = `
+            <img class="suggestion-poster" src="${posterSrc}" alt="${displayTitle}">
+            <div class="suggestion-info">
+              <span class="suggestion-title">${displayTitle}</span>
+              <span class="suggestion-year">${movie.Year}</span>
+            </div>
+          `
+
+          item.onclick = () => {
+            this.addMovie(movie.imdbID)
+            const searchInput = this.root.querySelector('#search-input')
+            searchInput.value = ''
+            this.hideSuggestions()
+          }
+
+          suggestions.appendChild(item)
+        })
+      }
+
+      suggestions.classList.remove('hide')
+    } catch(err) {
+      console.error(err)
+    }
   }
 }
