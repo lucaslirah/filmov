@@ -98,14 +98,15 @@ header{
   transition: all 0.3s;
   border: transparent 1px solid;
 }
-.search button:nth-child(even){
+/* .search button:nth-child(even){
   background-image: url('./assets/star-fav.svg');
   background-repeat: no-repeat;
   background-position: 1rem;
-  background-size: 25%;
+  tamanho máximo para o ícone de estrela
+  background-size: max(20px);
 
   padding-left: 4rem;
-}
+} */
 .search button:hover{
   background-color: transparent;
   border: 1px var(--bg-color-secondary) solid;
@@ -191,7 +192,7 @@ tfoot{
 
 @media(max-width: 660px){
   #app{
-    width: 40rem;
+    width: 90%;
   }
 
   header{
@@ -200,9 +201,143 @@ tfoot{
     justify-content: center;
     align-items: center;
     gap: 2rem;
+    margin: 3rem 0;
   }
 
-  .no-favorites div{
+  .search {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+    width: 100%;
+  }
+
+  .search input {
+    grid-column: 1 / -1;
+    order: 1;
+    width: 100%;
+  }
+
+  .search .clear {
+    grid-column: 1;
+    order: 2;
+    width: 100%;
+  }
+
+  .search .clear button {
+    width: 100%;
+  }
+
+  .search .fav-button {
+    grid-column: 2;
+    order: 3;
+    width: 100%;
+  }
+
+  /* Responsive table card layout */
+  table {
+    display: block;
+    border: 2px solid var(--border-color);
+    border-radius: .8rem;
+    overflow: hidden;
+  }
+
+  thead {
+    display: none;
+  }
+
+  tbody {
+    display: block;
+  }
+
+  tbody tr {
+    display: grid;
+    grid-template-columns: 90px 1fr auto;
+    grid-template-areas: 
+      "poster title remove"
+      "poster year remove"
+      "poster runtime remove";
+    gap: 0.8rem 1.6rem;
+    padding: 1.6rem;
+    align-items: center;
+    border-top: 2px solid var(--border-color);
+  }
+
+  tbody tr:first-child {
+    border-top: none;
+  }
+
+  tbody tr td {
+    border-top: none !important;
+    padding: 0 !important;
+  }
+
+  .movie-poster {
+    grid-area: poster;
+    text-align: left;
+  }
+
+  .movie-poster img {
+    width: 100%;
+    max-width: 80px;
+    height: auto;
+    display: block;
+  }
+
+  .movie-title {
+    grid-area: title;
+    font-weight: 500;
+    font-size: 1.6rem;
+    word-break: break-word;
+    align-self: end;
+  }
+
+  .movie-year {
+    grid-area: year;
+    font-size: 1.4rem;
+    color: var(--fc-secondary);
+    align-self: center;
+  }
+
+  .movie-runtime {
+    grid-area: runtime;
+    font-size: 1.4rem;
+    color: var(--fc-secondary);
+    align-self: start;
+  }
+
+  tbody tr td:last-child {
+    grid-area: remove;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Responsive empty state layout */
+  tfoot {
+    display: block;
+    height: auto;
+  }
+
+  tfoot tr, tfoot td {
+    display: block;
+    width: 100%;
+  }
+
+  .no-favorites div {
+    display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 5rem 2rem;
+    text-align: center;
+  }
+
+  .no-favorites div i {
+    font-size: 6rem;
+  }
+
+  .no-favorites span {
+    font-size: 2.2rem;
   }
 }
