@@ -76,6 +76,7 @@ export class FavoritesView extends Favorites{
 
     this.update()
     this.onadd()
+    this.onEnter()
   }
 
   onadd(){
@@ -148,5 +149,16 @@ export class FavoritesView extends Favorites{
     }else{
       noFavorites.classList.add('hide')
     }
+  }
+
+  // evento de botao enter, procurar ao pressionar
+  onEnter(){
+    const searchInput = this.root.querySelector('#search-input')
+    searchInput.addEventListener('keydown', (event) => {
+      if(event.key === 'Enter'){
+        const { value } = this.root.querySelector('#search-input')
+        this.addMovie(value)
+      }
+    })
   }
 }
