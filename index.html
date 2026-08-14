@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -21,13 +21,19 @@
   <body>
     <div id="app">
       <header>
-        <img src="./assets/logo-filmov.svg" alt="logo filmov" />
-        <div class="search">
-          <div class="clear">
-            <button>CLEAR</button>
+        <div class="brand">
+          <img src="./assets/logo-filmov.svg" alt="logo filmov" />
+          <div id="user-profile-header">
+            <button class="google-login-btn">
+              <i class="ph ph-sign-in"></i> Entrar
+            </button>
           </div>
+        </div>
+        <div class="search">
           <div class="search-input-wrapper">
-            <label class="sr-only" for="search-input">Type a movie title</label>
+            <label class="sr-only" for="search-input"
+              >Digite o nome de um filme</label
+            >
             <input
               id="search-input"
               type="text"
@@ -36,18 +42,43 @@
             />
             <div id="search-suggestions" class="search-suggestions hide"></div>
           </div>
-          <button class="fav-button">FAV</button>
+          <button class="fav-button">
+            <i class="ph-fill ph-star"></i>
+            <span>FAV</span>
+          </button>
         </div>
       </header>
+
+      <nav class="tabs-nav">
+        <button class="tab-btn active" data-tab="all">
+          <i class="ph ph-globe"></i> Todos os Favoritos
+        </button>
+        <button
+          class="tab-btn"
+          data-tab="my"
+          disabled
+          title="Faça login para ver seus favoritos"
+        >
+          <i class="ph ph-user"></i> Meus Favoritos
+        </button>
+        <button
+          class="tab-btn"
+          data-tab="trash"
+          disabled
+          title="Faça login para ver a lixeira"
+        >
+          <i class="ph ph-trash"></i> Histórico / Lixeira
+        </button>
+      </nav>
 
       <table cellspacing="0">
         <thead>
           <tr>
             <th></th>
-            <th>Title</th>
-            <th>Year</th>
-            <th>Runtime</th>
-            <th>Action</th>
+            <th>Título</th>
+            <th>Ano</th>
+            <th>Duração</th>
+            <th>Ação</th>
           </tr>
         </thead>
 
@@ -58,12 +89,127 @@
             <td colspan="5">
               <div>
                 <i class="ph ph-star-half"></i>
-                <span>Has no favorites yet</span>
+                <span id="empty-message">Has no favorites yet</span>
               </div>
             </td>
           </tr>
         </tfoot>
       </table>
+    </div>
+
+    <!-- Login Modal Overlay -->
+    <div id="login-modal" class="modal-overlay hide">
+      <div class="modal-card">
+        <button class="close-modal"><i class="ph ph-x"></i></button>
+        <div class="modal-header">
+          <i class="ph ph-user login-icon"></i>
+          <h2>Fazer login</h2>
+          <p>Entre com seus dados para continuar no <strong>Filmov</strong></p>
+        </div>
+
+        <div id="saved-account-container" class="hide">
+          <!-- Dynamic saved account list goes here -->
+        </div>
+
+        <form id="custom-login-form">
+          <div class="form-group">
+            <input
+              type="text"
+              id="custom-name"
+              placeholder="Seu nome completo"
+              required
+              autocomplete="off"
+            />
+          </div>
+          <div class="form-group">
+            <input
+              type="email"
+              id="custom-email"
+              placeholder="Seu endereço de e-mail"
+              required
+              autocomplete="off"
+            />
+          </div>
+          <button type="submit" class="submit-custom-login">Entrar</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Movie Reviews & Comments Drawer Overlay -->
+    <div id="movie-drawer" class="drawer-overlay hide">
+      <div class="drawer-content">
+        <button class="close-drawer"><i class="ph ph-x"></i></button>
+
+        <div class="drawer-header">
+          <div class="drawer-poster-wrapper">
+            <img id="drawer-poster" src="" alt="Movie Poster" />
+            <div class="drawer-avg-badge">
+              <i class="ph-fill ph-star"></i>
+              <span id="drawer-avg-rating">0.0</span>
+            </div>
+          </div>
+          <div class="drawer-info">
+            <h2 id="drawer-title">Movie Title</h2>
+            <div class="drawer-meta">
+              <span id="drawer-year">Year</span>
+              <span class="bullet">•</span>
+              <span id="drawer-runtime">Runtime</span>
+            </div>
+            <div
+              id="drawer-external-ratings"
+              class="movie-external-ratings"
+            ></div>
+            <div class="drawer-owners-wrapper">
+              <span class="owners-label">Favoritado por:</span>
+              <div id="drawer-owners" class="owners-avatars">
+                <!-- User avatars here -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="drawer-body">
+          <section class="drawer-section">
+            <h3>Avaliações e Comentários</h3>
+            <div id="drawer-reviews-list" class="reviews-list">
+              <!-- Reviews from users -->
+            </div>
+          </section>
+
+          <section class="drawer-section user-review-section">
+            <h3>Minha Avaliação</h3>
+            <div id="drawer-review-form">
+              <p class="login-warning">
+                Faça login para poder avaliar e comentar este filme.
+              </p>
+              <div class="form-content hide">
+                <div class="rating-stars-input">
+                  <span class="star-btn" data-star="1"
+                    ><i class="ph ph-star"></i
+                  ></span>
+                  <span class="star-btn" data-star="2"
+                    ><i class="ph ph-star"></i
+                  ></span>
+                  <span class="star-btn" data-star="3"
+                    ><i class="ph ph-star"></i
+                  ></span>
+                  <span class="star-btn" data-star="4"
+                    ><i class="ph ph-star"></i
+                  ></span>
+                  <span class="star-btn" data-star="5"
+                    ><i class="ph ph-star"></i
+                  ></span>
+                </div>
+                <textarea
+                  id="review-comment"
+                  placeholder="O que você achou deste filme? Escreva sua crítica aqui..."
+                ></textarea>
+                <button id="save-review-btn">Enviar Avaliação</button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
     </div>
   </body>
 </html>

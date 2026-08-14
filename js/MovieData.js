@@ -25,7 +25,10 @@ export class MovieData{
         Title: ptTitle,
         Year: movie.Year,
         Runtime: movie.Runtime,
-        Poster: movie.Poster
+        Poster: movie.Poster,
+        imdbRating: movie.imdbRating,
+        rottenRating: (movie.Ratings || []).find(r => r.Source === "Rotten Tomatoes")?.Value || "N/A",
+        imdbID: movie.imdbID
       }
     } catch(e) {
       console.error(e)
