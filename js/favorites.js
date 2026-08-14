@@ -69,15 +69,16 @@ export class Favorites {
     });
     
     return Object.values(grouped).map(movie => {
-      const totalRating = movie.notes.reduce((sum, n) => sum + (n.rating || 0), 0)
-      movie.avgRating = movie.notes.length > 0 ? (totalRating / movie.notes.length).toFixed(1) : '0.0'
+      const ratedNotes = movie.notes.filter(n => n.rating > 0)
+      const totalRating = ratedNotes.reduce((sum, n) => sum + n.rating, 0)
+      movie.avgRating = ratedNotes.length > 0 ? (totalRating / ratedNotes.length).toFixed(1) : '0.0'
       return movie
     })
   }
 
   getMovieAvgRating(imdbId) {
-    const notes = this.allActiveNotes.filter(n => n.imdb_id === imdbId)
-    const total = notes.reduce((sum, n) => sum + (n.rating || 0), 0)
+    const notes = this.allActiveNotes.filter(n => n.imdb_id === imdbId && n.rating > 0)
+    const total = notes.reduce((sum, n) => sum + n.rating, 0)
     return notes.length > 0 ? (total / notes.length).toFixed(1) : '0.0'
   }
 
@@ -107,7 +108,7 @@ export class Favorites {
         body: JSON.stringify({
           title: movieData.Title,
           description: '',
-          rating: 5,
+          rating: 0,
           imdb_id: imdbId,
           year: movieData.Year,
           runtime: movieData.Runtime,
@@ -372,8 +373,12 @@ export class FavoritesView extends Favorites {
     starBtns.forEach(star => {
       star.onclick = () => {
         const rating = parseInt(star.getAttribute('data-star'))
-        this.selectedRating = rating
-        this.renderDrawerStarsInput(rating)
+        if (this.selectedRating === rating && rating === 1) {
+          this.selectedRating = 0
+        } else {
+          this.selectedRating = rating
+        }
+        this.renderDrawerStarsInput(this.selectedRating)
       }
       
       star.onmouseenter = () => {
@@ -382,7 +387,7 @@ export class FavoritesView extends Favorites {
       }
 
       star.onmouseleave = () => {
-        this.renderDrawerStarsInput(this.selectedRating || 5)
+        this.renderDrawerStarsInput(this.selectedRating !== undefined ? this.selectedRating : 0)
       }
     })
 
@@ -392,7 +397,7 @@ export class FavoritesView extends Favorites {
       if (!this.currentUser) return
       
       const commentText = document.getElementById('review-comment').value.trim()
-      const rating = this.selectedRating || 5
+      const rating = this.selectedRating !== undefined ? this.selectedRating : 0
       
       try {
         if (this.activeDrawerMovieNoteId) {
@@ -446,9 +451,15 @@ export class FavoritesView extends Favorites {
       const starVal = parseInt(star.getAttribute('data-star'))
       const icon = star.querySelector('i')
       
+      star.classList.remove('active', 'hover')
+      
       if (starVal <= rating) {
-        star.classList.add(isHover ? 'hover' : 'active')
-        icon.className = 'ph ph-star-fill'
+        if (isHover) {
+          star.classList.add('hover')
+        } else {
+          star.classList.add('active')
+        }
+        icon.className = 'ph-fill ph-star'
       } else {
         star.classList.remove('active', 'hover')
         icon.className = 'ph ph-star'
@@ -459,7 +470,7 @@ export class FavoritesView extends Favorites {
   openDrawer(movie) {
     this.activeDrawerMovie = movie
     this.activeDrawerMovieNoteId = null
-    this.selectedRating = 5
+    this.selectedRating = 0
     
     // Set poster, title, etc.
     const posterSrc = movie.Poster && movie.Poster !== 'N/A' ? movie.Poster : 'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?auto=format&fit=crop&w=150&q=200'
@@ -509,7 +520,7 @@ export class FavoritesView extends Favorites {
     const reviewsListContainer = document.getElementById('drawer-reviews-list')
     reviewsListContainer.innerHTML = ''
     
-    const notesWithComments = notesList.filter(note => note.description.trim())
+    const notesWithComments = notesList.filter(note => note.description.trim() || note.rating > 0)
     
     if (notesWithComments.length === 0) {
       reviewsListContainer.innerHTML = `<div class="no-reviews">Nenhum comentário escrito para este filme ainda.</div>`
@@ -522,10 +533,13 @@ export class FavoritesView extends Favorites {
         
         let starsHTML = ''
         for (let i = 1; i <= 5; i++) {
-          starsHTML += i <= note.rating ? '<i class="ph ph-star-fill"></i>' : '<i class="ph ph-star"></i>'
+          starsHTML += i <= note.rating ? '<i class="ph-fill ph-star"></i>' : '<i class="ph ph-star"></i>'
         }
 
         const dateStr = note.updated_at ? note.updated_at.split(' ')[0] : 'Recentemente'
+        const commentText = note.description.trim() 
+          ? note.description 
+          : `<span style="font-style: italic; color: var(--fc-secondary); font-size: 1.3rem;">Apenas avaliou com estrelas.</span>`
 
         item.innerHTML = `
           <div class="review-user-header">
@@ -537,7 +551,7 @@ export class FavoritesView extends Favorites {
               ${starsHTML}
             </div>
           </div>
-          <p class="review-comment-text">${note.description}</p>
+          <p class="review-comment-text">${commentText}</p>
           <span class="review-date">${dateStr}</span>
         `
         reviewsListContainer.appendChild(item)
@@ -561,12 +575,12 @@ export class FavoritesView extends Favorites {
       
       if (myNote) {
         this.activeDrawerMovieNoteId = myNote.id
-        this.selectedRating = myNote.rating || 5
+        this.selectedRating = myNote.rating !== undefined ? myNote.rating : 0
         document.getElementById('review-comment').value = myNote.description || ''
         this.movieDrawer.querySelector('#save-review-btn').textContent = 'Atualizar Crítica'
       } else {
         this.activeDrawerMovieNoteId = null
-        this.selectedRating = 5
+        this.selectedRating = 0
         document.getElementById('review-comment').value = ''
         this.movieDrawer.querySelector('#save-review-btn').textContent = 'Adicionar aos Favoritos e Avaliar'
       }
@@ -658,7 +672,7 @@ export class FavoritesView extends Favorites {
         <div class="poster-wrapper">
           <img src="${posterSrc}" alt="${title}">
           <div class="avg-rating-badge">
-            <i class="ph ph-star-fill"></i>
+            <i class="ph-fill ph-star"></i>
             <span>${rating}</span>
           </div>
         </div>

@@ -1008,6 +1008,11 @@ tfoot{
 .star-btn {
   cursor: pointer;
   transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.2rem;
+  height: 3.2rem;
 }
 
 .star-btn:hover {
