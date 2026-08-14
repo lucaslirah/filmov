@@ -21,7 +21,14 @@
   <body>
     <div id="app">
       <header>
-        <img src="./assets/logo-filmov.svg" alt="logo filmov" />
+        <div class="brand">
+          <img src="./assets/logo-filmov.svg" alt="logo filmov" />
+          <div id="user-profile-header">
+            <button class="google-login-btn">
+              <i class="ph ph-google-logo"></i> Entrar com Google
+            </button>
+          </div>
+        </div>
         <div class="search">
           <div class="clear">
             <button>CLEAR</button>
@@ -39,6 +46,18 @@
           <button class="fav-button">FAV</button>
         </div>
       </header>
+
+      <nav class="tabs-nav">
+        <button class="tab-btn active" data-tab="all">
+          <i class="ph ph-globe"></i> Todos os Favoritos
+        </button>
+        <button class="tab-btn" data-tab="my" disabled title="Faça login para ver seus favoritos">
+          <i class="ph ph-user"></i> Meus Favoritos
+        </button>
+        <button class="tab-btn" data-tab="trash" disabled title="Faça login para ver a lixeira">
+          <i class="ph ph-trash"></i> Histórico / Lixeira
+        </button>
+      </nav>
 
       <table cellspacing="0">
         <thead>
@@ -58,12 +77,118 @@
             <td colspan="5">
               <div>
                 <i class="ph ph-star-half"></i>
-                <span>Has no favorites yet</span>
+                <span id="empty-message">Has no favorites yet</span>
               </div>
             </td>
           </tr>
         </tfoot>
       </table>
+    </div>
+
+    <!-- Google Login Modal Overlay -->
+    <div id="login-modal" class="modal-overlay hide">
+      <div class="modal-card">
+        <button class="close-modal"><i class="ph ph-x"></i></button>
+        <div class="modal-header">
+          <i class="ph ph-google-logo google-icon"></i>
+          <h2>Fazer login com o Google</h2>
+          <p>Escolha uma conta para continuar no <strong>Filmov</strong></p>
+        </div>
+        
+        <div class="google-accounts-list">
+          <div class="google-account-item" data-email="lucas.lira@gmail.com" data-name="Lucas Lira" data-avatar="https://github.com/lucaslirah.png">
+            <img src="https://github.com/lucaslirah.png" alt="Lucas Lira">
+            <div class="account-info">
+              <span class="account-name">Lucas Lira</span>
+              <span class="account-email">lucas.lira@gmail.com</span>
+            </div>
+          </div>
+          <div class="google-account-item" data-email="ana.silva@gmail.com" data-name="Ana Silva" data-avatar="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100">
+            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100" alt="Ana Silva">
+            <div class="account-info">
+              <span class="account-name">Ana Silva</span>
+              <span class="account-email">ana.silva@gmail.com</span>
+            </div>
+          </div>
+          <div class="google-account-item" data-email="carlos.moraes@gmail.com" data-name="Carlos Moraes" data-avatar="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100" alt="Carlos Moraes">
+            <div class="account-info">
+              <span class="account-name">Carlos Moraes</span>
+              <span class="account-email">carlos.moraes@gmail.com</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="modal-divider">ou use uma conta personalizada</div>
+        
+        <form id="custom-login-form">
+          <div class="form-group">
+            <input type="text" id="custom-name" placeholder="Seu nome completo" required autocomplete="off">
+          </div>
+          <div class="form-group">
+            <input type="email" id="custom-email" placeholder="Seu endereço de e-mail" required autocomplete="off">
+          </div>
+          <button type="submit" class="submit-custom-login">Entrar</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Movie Reviews & Comments Drawer Overlay -->
+    <div id="movie-drawer" class="drawer-overlay hide">
+      <div class="drawer-content">
+        <button class="close-drawer"><i class="ph ph-x"></i></button>
+        
+        <div class="drawer-header">
+          <div class="drawer-poster-wrapper">
+            <img id="drawer-poster" src="" alt="Movie Poster">
+            <div class="drawer-avg-badge">
+              <i class="ph ph-star-fill"></i>
+              <span id="drawer-avg-rating">0.0</span>
+            </div>
+          </div>
+          <div class="drawer-info">
+            <h2 id="drawer-title">Movie Title</h2>
+            <div class="drawer-meta">
+              <span id="drawer-year">Year</span>
+              <span class="bullet">•</span>
+              <span id="drawer-runtime">Runtime</span>
+            </div>
+            <div class="drawer-owners-wrapper">
+              <span class="owners-label">Favoritado por:</span>
+              <div id="drawer-owners" class="owners-avatars">
+                <!-- User avatars here -->
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="drawer-body">
+          <section class="drawer-section">
+            <h3>Avaliações e Comentários</h3>
+            <div id="drawer-reviews-list" class="reviews-list">
+              <!-- Reviews from users -->
+            </div>
+          </section>
+          
+          <section class="drawer-section user-review-section">
+            <h3>Minha Avaliação</h3>
+            <div id="drawer-review-form">
+              <p class="login-warning">Faça login para poder avaliar e comentar este filme.</p>
+              <div class="form-content hide">
+                <div class="rating-stars-input">
+                  <span class="star-btn" data-star="1"><i class="ph ph-star"></i></span>
+                  <span class="star-btn" data-star="2"><i class="ph ph-star"></i></span>
+                  <span class="star-btn" data-star="3"><i class="ph ph-star"></i></span>
+                  <span class="star-btn" data-star="4"><i class="ph ph-star"></i></span>
+                  <span class="star-btn" data-star="5"><i class="ph ph-star"></i></span>
+                </div>
+                <textarea id="review-comment" placeholder="O que você achou deste filme? Escreva sua crítica aqui..."></textarea>
+                <button id="save-review-btn">Enviar Avaliação</button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
     </div>
   </body>
 </html>
