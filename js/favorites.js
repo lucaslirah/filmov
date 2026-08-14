@@ -60,6 +60,8 @@ export class Favorites {
           Year: note.year,
           Runtime: note.runtime,
           Poster: note.poster,
+          imdb_rating: note.imdb_rating,
+          rotten_rating: note.rotten_rating,
           notes: []
         }
       }
@@ -110,6 +112,8 @@ export class Favorites {
           year: movieData.Year,
           runtime: movieData.Runtime,
           poster: movieData.Poster,
+          imdb_rating: movieData.imdbRating,
+          rotten_rating: movieData.rottenRating,
           tags: []
         })
       })
@@ -465,6 +469,22 @@ export class FavoritesView extends Favorites {
     document.getElementById('drawer-runtime').textContent = movie.Runtime
     document.getElementById('drawer-avg-rating').textContent = movie.avgRating || this.getMovieAvgRating(movie.imdb_id)
     
+    // Render external ratings
+    const drawerRatings = document.getElementById('drawer-external-ratings')
+    if (drawerRatings) {
+      const imdbRating = movie.imdb_rating || movie.imdbRating || 'N/A'
+      const rottenRating = movie.rotten_rating || movie.rottenRating || 'N/A'
+      
+      drawerRatings.innerHTML = `
+        ${imdbRating && imdbRating !== 'N/A' ? `
+          <span class="rating-badge imdb" title="IMDb Rating">IMDb: ${imdbRating}</span>
+        ` : ''}
+        ${rottenRating && rottenRating !== 'N/A' ? `
+          <span class="rating-badge rotten" title="Rotten Tomatoes Rating">RT: ${rottenRating}</span>
+        ` : ''}
+      `
+    }
+    
     // Render list of owners avatars
     const ownersContainer = document.getElementById('drawer-owners')
     ownersContainer.innerHTML = ''
@@ -630,6 +650,9 @@ export class FavoritesView extends Favorites {
     const rating = isGrouped ? movieOrNote.avgRating : this.getMovieAvgRating(imdbId)
     const noteId = movieOrNote.id // exists if it is an individual note
 
+    const imdbRating = movieOrNote.imdb_rating || movieOrNote.imdbRating || 'N/A'
+    const rottenRating = movieOrNote.rotten_rating || movieOrNote.rottenRating || 'N/A'
+
     tr.innerHTML = `
       <td class="movie-poster">
         <div class="poster-wrapper">
@@ -640,7 +663,17 @@ export class FavoritesView extends Favorites {
           </div>
         </div>
       </td>
-      <td class="movie-title">${title}</td>
+      <td class="movie-title">
+        <div class="movie-title-text">${title}</div>
+        <div class="movie-external-ratings">
+          ${imdbRating && imdbRating !== 'N/A' ? `
+            <span class="rating-badge imdb" title="IMDb Rating">IMDb: ${imdbRating}</span>
+          ` : ''}
+          ${rottenRating && rottenRating !== 'N/A' ? `
+            <span class="rating-badge rotten" title="Rotten Tomatoes Rating">RT: ${rottenRating}</span>
+          ` : ''}
+        </div>
+      </td>
       <td class="movie-year">${year}</td>
       <td class="movie-runtime">${runtime}</td>
       <td class="movie-actions">
