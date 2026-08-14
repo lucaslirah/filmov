@@ -166,6 +166,28 @@ export class Favorites {
       alert(err.message)
     }
   }
+
+  async deleteMovieGlobally(imdbId, title) {
+    try {
+      if (!this.currentUser || this.currentUser.email !== 'lucas.lira@gmail.com') {
+        throw new Error('Permissão negada. Apenas o administrador pode realizar esta ação.')
+      }
+
+      if (confirm(`Tem certeza de que deseja remover o filme "${title}" da lista global? Isso excluirá o filme para todos os usuários.`)) {
+        const res = await fetch(`${this.API_URL}/movie_notes/imdb/${imdbId}?user_email=${this.currentUser.email}`, {
+          method: 'DELETE'
+        })
+        const data = await res.json()
+        if (!res.ok) {
+          throw new Error(data.message || 'Erro ao remover filme globalmente.')
+        }
+        await this.load()
+        this.update()
+      }
+    } catch (err) {
+      alert(err.message)
+    }
+  }
 }
 
 export class FavoritesView extends Favorites {
@@ -195,15 +217,16 @@ export class FavoritesView extends Favorites {
   }
 
   bindAuthEvents() {
-    // Open Google Login modal
+    // Open Login modal
     this.root.addEventListener('click', (e) => {
       const btn = e.target.closest('.google-login-btn')
       if (btn) {
+        this.renderSavedAccount()
         this.loginModal.classList.remove('hide')
       }
     })
 
-    // Close Google Login modal
+    // Close Login modal
     this.loginModal.querySelector('.close-modal').onclick = () => {
       this.loginModal.classList.add('hide')
     }
@@ -212,17 +235,6 @@ export class FavoritesView extends Favorites {
         this.loginModal.classList.add('hide')
       }
     }
-
-    // Google accounts items click
-    const accounts = this.loginModal.querySelectorAll('.google-account-item')
-    accounts.forEach(item => {
-      item.onclick = async () => {
-        const name = item.getAttribute('data-name')
-        const email = item.getAttribute('data-email')
-        const avatar = item.getAttribute('data-avatar')
-        await this.loginUser(name, email, avatar)
-      }
-    })
 
     // Custom Login Form submit
     this.customLoginForm.onsubmit = async (e) => {
@@ -235,9 +247,48 @@ export class FavoritesView extends Favorites {
     }
   }
 
+  renderSavedAccount() {
+    const savedUser = JSON.parse(localStorage.getItem('@Filmov:savedUser'))
+    const container = document.getElementById('saved-account-container')
+    if (!container) return
+
+    if (savedUser) {
+      const avatarUrl = savedUser.avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(savedUser.name)}`
+      container.innerHTML = `
+        <div class="saved-account-label">Acesso rápido</div>
+        <div class="saved-account-wrapper">
+          <div class="saved-account-item">
+            <img src="${avatarUrl}" alt="${savedUser.name}">
+            <div class="account-info">
+              <span class="account-name">${savedUser.name}</span>
+              <span class="account-email">${savedUser.email}</span>
+            </div>
+          </div>
+          <button class="saved-account-forget-btn" title="Esquecer dados"><i class="ph ph-trash"></i></button>
+        </div>
+      `
+      container.classList.remove('hide')
+
+      // Click to quick login
+      container.querySelector('.saved-account-item').onclick = async () => {
+        await this.loginUser(savedUser.name, savedUser.email, savedUser.avatar)
+      }
+
+      // Click to forget saved account
+      container.querySelector('.saved-account-forget-btn').onclick = (e) => {
+        e.stopPropagation()
+        localStorage.removeItem('@Filmov:savedUser')
+        this.renderSavedAccount()
+      }
+    } else {
+      container.innerHTML = ''
+      container.classList.add('hide')
+    }
+  }
+
   async loginUser(name, email, avatar) {
     try {
-      const res = await fetch(`${this.API_URL}/users/google`, {
+      const res = await fetch(`${this.API_URL}/users/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, avatar })
@@ -250,6 +301,11 @@ export class FavoritesView extends Favorites {
 
       this.currentUser = data
       localStorage.setItem('@Filmov:user', JSON.stringify(data))
+      localStorage.setItem('@Filmov:savedUser', JSON.stringify({
+        name: data.name,
+        email: data.email,
+        avatar: data.avatar
+      }))
       
       // Clear inputs
       document.getElementById('custom-name').value = ''
@@ -537,7 +593,7 @@ export class FavoritesView extends Favorites {
     } else {
       container.innerHTML = `
         <button class="google-login-btn">
-          <i class="ph ph-google-logo"></i> Entrar com Google
+          <i class="ph ph-sign-in"></i> Entrar
         </button>
       `
     }
@@ -633,6 +689,19 @@ export class FavoritesView extends Favorites {
             this.addMovie(imdbId)
           }
           actionsTd.appendChild(btn)
+        }
+
+        // Render global delete for admin user
+        if (this.currentUser.email === 'lucas.lira@gmail.com') {
+          const adminBtn = document.createElement('button')
+          adminBtn.className = 'remove'
+          adminBtn.title = 'Remover da lista global (Admin)'
+          adminBtn.innerHTML = '<i class="ph ph-trash"></i>'
+          adminBtn.style.marginLeft = '1rem'
+          adminBtn.onclick = () => {
+            this.deleteMovieGlobally(imdbId, title)
+          }
+          actionsTd.appendChild(adminBtn)
         }
       } else {
         // Disabled star showing login prompt

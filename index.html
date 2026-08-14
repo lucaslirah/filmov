@@ -25,7 +25,7 @@
           <img src="./assets/logo-filmov.svg" alt="logo filmov" />
           <div id="user-profile-header">
             <button class="google-login-btn">
-              <i class="ph ph-google-logo"></i> Entrar com Google
+              <i class="ph ph-sign-in"></i> Entrar
             </button>
           </div>
         </div>
@@ -85,41 +85,19 @@
       </table>
     </div>
 
-    <!-- Google Login Modal Overlay -->
+    <!-- Login Modal Overlay -->
     <div id="login-modal" class="modal-overlay hide">
       <div class="modal-card">
         <button class="close-modal"><i class="ph ph-x"></i></button>
         <div class="modal-header">
-          <i class="ph ph-google-logo google-icon"></i>
-          <h2>Fazer login com o Google</h2>
-          <p>Escolha uma conta para continuar no <strong>Filmov</strong></p>
+          <i class="ph ph-user login-icon"></i>
+          <h2>Fazer login</h2>
+          <p>Entre com seus dados para continuar no <strong>Filmov</strong></p>
         </div>
         
-        <div class="google-accounts-list">
-          <div class="google-account-item" data-email="lucas.lira@gmail.com" data-name="Lucas Lira" data-avatar="https://github.com/lucaslirah.png">
-            <img src="https://github.com/lucaslirah.png" alt="Lucas Lira">
-            <div class="account-info">
-              <span class="account-name">Lucas Lira</span>
-              <span class="account-email">lucas.lira@gmail.com</span>
-            </div>
-          </div>
-          <div class="google-account-item" data-email="ana.silva@gmail.com" data-name="Ana Silva" data-avatar="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100">
-            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100" alt="Ana Silva">
-            <div class="account-info">
-              <span class="account-name">Ana Silva</span>
-              <span class="account-email">ana.silva@gmail.com</span>
-            </div>
-          </div>
-          <div class="google-account-item" data-email="carlos.moraes@gmail.com" data-name="Carlos Moraes" data-avatar="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100">
-            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100" alt="Carlos Moraes">
-            <div class="account-info">
-              <span class="account-name">Carlos Moraes</span>
-              <span class="account-email">carlos.moraes@gmail.com</span>
-            </div>
-          </div>
+        <div id="saved-account-container" class="hide">
+          <!-- Dynamic saved account list goes here -->
         </div>
-        
-        <div class="modal-divider">ou use uma conta personalizada</div>
         
         <form id="custom-login-form">
           <div class="form-group">
