@@ -69,7 +69,7 @@ header{
 
 .search{
   display: flex;
-  align-items: initial;
+  align-items: center;
   gap: 1.2rem;
 }
 .search-input-wrapper {
@@ -283,31 +283,17 @@ tfoot{
   }
 
   .search {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 1.2rem;
     width: 100%;
   }
 
   .search-input-wrapper {
-    grid-column: 1 / -1;
-    order: 1;
-    width: 100%;
-  }
-
-  .search .clear {
-    grid-column: 1;
-    order: 2;
-    width: 100%;
-  }
-
-  .search .clear button {
     width: 100%;
   }
 
   .search .fav-button {
-    grid-column: 2;
-    order: 3;
     width: 100%;
   }
 
@@ -425,10 +411,8 @@ tfoot{
 /* Brand & Profile Layout */
 .brand {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  width: 100%;
-  margin-bottom: 2rem;
+  gap: 2.4rem;
 }
 
 #user-profile-header {
@@ -1112,6 +1096,8 @@ tr td.movie-title:hover {
   .brand {
     flex-direction: column;
     gap: 1.5rem;
+    width: 100%;
+    margin-bottom: 2rem;
   }
   
   .tabs-nav {
