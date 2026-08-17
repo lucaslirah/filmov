@@ -10,11 +10,21 @@ export class MovieData{
     const endpoint = `https://www.omdbapi.com/?${param}=${titleOrId}&apikey=${apiKey}`
 
     try {
-      const res = await fetch(endpoint)
-      const movie = await res.json()
+      let res = await fetch(endpoint)
+      let movie = await res.json()
       
+      if ((movie.Response === "False" || !movie.Title) && param === 't') {
+        // If searching by title failed, try translating via Wikipedia
+        const translated = await this.translateTitleViaWiki(titleOrId);
+        if (translated && translated.toLowerCase() !== titleOrId.toLowerCase()) {
+          const cleanTranslated = translated.replace(/\s*\([^)]*\)\s*$/, '');
+          const retryEndpoint = `https://www.omdbapi.com/?t=${encodeURIComponent(cleanTranslated)}&apikey=${apiKey}`
+          res = await fetch(retryEndpoint)
+          movie = await res.json()
+        }
+      }
+
       if(movie.Response === "False" || !movie.Title){
-        // If searching by title failed, try searching Wikidata by exact title first
         return { Title: undefined }
       }
 
@@ -90,7 +100,8 @@ export class MovieData{
     if(searchResults.length === 0) {
       const translated = await this.translateTitleViaWiki(query);
       if(translated && translated.toLowerCase() !== query.toLowerCase()) {
-        searchResults = await runSearch(translated);
+        const cleanTranslated = translated.replace(/\s*\([^)]*\)\s*$/, '');
+        searchResults = await runSearch(cleanTranslated);
       }
     }
 
