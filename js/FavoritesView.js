@@ -21,7 +21,7 @@ export class FavoritesView {
 
   async init() {
     this.bindTabEvents();
-    
+
     // Load initial data
     await this.appState.load();
   }
