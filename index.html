@@ -211,5 +211,51 @@
         </div>
       </div>
     </div>
+    <!-- Edit Avatar Modal Overlay -->
+    <div id="avatar-modal" class="modal-overlay hide">
+      <div class="modal-card">
+        <button class="close-modal"><i class="ph ph-x"></i></button>
+        <div class="modal-header">
+          <div class="avatar-modal-header-preview">
+            <img id="avatar-modal-header-img" src="" alt="Avatar Preview" class="hide">
+            <i id="avatar-modal-header-placeholder" class="ph ph-user-circle login-icon"></i>
+          </div>
+          <h2>Alterar Avatar</h2>
+          <p>Escolha um robô ou faça upload de uma foto de seu dispositivo</p>
+        </div>
+
+        <div class="avatar-options-container">
+          <!-- Predefined robots -->
+          <div class="avatar-section">
+            <h3>Robôs predefinidos</h3>
+            <div class="predefined-avatars" id="predefined-avatars-list">
+              <!-- Dynamically populated -->
+            </div>
+            <div class="custom-robot-input-group">
+              <input type="text" id="custom-robot-seed" placeholder="Crie um robô customizado..." autocomplete="off">
+              <button id="preview-robot-btn">Visualizar</button>
+            </div>
+          </div>
+
+          <!-- File Upload -->
+          <div class="avatar-section upload-section">
+            <h3>Enviar foto do dispositivo</h3>
+            <div class="upload-area" id="avatar-upload-area">
+              <i class="ph ph-cloud-arrow-up"></i>
+              <span>Clique ou arraste um arquivo de imagem</span>
+              <input type="file" id="avatar-file-input" accept="image/*" class="hide">
+            </div>
+            <div class="preview-upload-wrapper hide" id="preview-upload-wrapper">
+              <img id="avatar-upload-preview" src="" alt="Preview">
+              <button type="button" id="remove-upload-btn"><i class="ph ph-trash"></i> Remover</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="avatar-modal-actions">
+          <button id="save-avatar-btn" class="save-avatar-btn" disabled>Salvar Alterações</button>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
