@@ -1063,26 +1063,30 @@ tfoot{
 /* Custom Scrollbar for Suggestions and Reviews */
 .search-suggestions::-webkit-scrollbar,
 .reviews-list::-webkit-scrollbar,
-.drawer-content::-webkit-scrollbar {
+.drawer-content::-webkit-scrollbar,
+.avatar-options-container::-webkit-scrollbar {
   width: 0.6rem;
 }
 
 .search-suggestions::-webkit-scrollbar-track,
 .reviews-list::-webkit-scrollbar-track,
-.drawer-content::-webkit-scrollbar-track {
+.drawer-content::-webkit-scrollbar-track,
+.avatar-options-container::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.1);
 }
 
 .search-suggestions::-webkit-scrollbar-thumb,
 .reviews-list::-webkit-scrollbar-thumb,
-.drawer-content::-webkit-scrollbar-thumb {
+.drawer-content::-webkit-scrollbar-thumb,
+.avatar-options-container::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.15);
   border-radius: 3px;
 }
 
 .search-suggestions::-webkit-scrollbar-thumb:hover,
 .reviews-list::-webkit-scrollbar-thumb:hover,
-.drawer-content::-webkit-scrollbar-thumb:hover {
+.drawer-content::-webkit-scrollbar-thumb:hover,
+.avatar-options-container::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.25);
 }
 
@@ -1208,12 +1212,28 @@ tr td.movie-title:hover {
 }
 
 /* Avatar Modal Styles */
+#avatar-modal .modal-card {
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 2rem;
+}
+
+#avatar-modal .modal-header {
+  flex-shrink: 0;
+  margin-bottom: 1.6rem;
+}
+
 .avatar-options-container {
   display: flex;
   flex-direction: column;
   gap: 2.4rem;
-  margin: 2rem 0;
+  margin: 0;
+  margin-bottom: 1.6rem;
   width: 100%;
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 0.8rem;
 }
 
 .avatar-section {
@@ -1381,8 +1401,9 @@ tr td.movie-title:hover {
 .avatar-modal-actions {
   display: flex;
   justify-content: flex-end;
-  margin-top: 1.2rem;
+  margin-top: 0;
   width: 100%;
+  flex-shrink: 0;
 }
 
 .save-avatar-btn {
@@ -1411,8 +1432,28 @@ tr td.movie-title:hover {
 }
 
 @media(max-width: 480px) {
+  .modal-card {
+    padding: 2rem 1.6rem;
+    width: 92%;
+  }
+
   .predefined-avatars {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.8rem;
+  }
+
+  .custom-robot-input-group {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .custom-robot-input-group button {
+    padding: 1rem;
+    width: 100%;
+  }
+
+  .upload-area {
+    padding: 1.6rem;
   }
 }
 
