@@ -3,11 +3,14 @@
 // p.textContent = `content`
 // app.appendChild(p)
 
+const API_URL = ["localhost", "127.0.0.1"].includes(location.hostname)
+  ? "http://localhost:3333"
+  : "https://filmov-api.onrender.com";
+
 export class MovieData{
   static async search(titleOrId){
-    const apiKey = '22fddf5e'
     const param = /^tt\d+$/.test(titleOrId) ? 'i' : 't'
-    const endpoint = `https://www.omdbapi.com/?${param}=${titleOrId}&apikey=${apiKey}`
+    const endpoint = `${API_URL}/omdb?${param}=${encodeURIComponent(titleOrId)}`
 
     try {
       let res = await fetch(endpoint)
@@ -18,7 +21,7 @@ export class MovieData{
         const translated = await this.translateTitleViaWiki(titleOrId);
         if (translated && translated.toLowerCase() !== titleOrId.toLowerCase()) {
           const cleanTranslated = translated.replace(/\s*\([^)]*\)\s*$/, '');
-          const retryEndpoint = `https://www.omdbapi.com/?t=${encodeURIComponent(cleanTranslated)}&apikey=${apiKey}`
+          const retryEndpoint = `${API_URL}/omdb?t=${encodeURIComponent(cleanTranslated)}`
           res = await fetch(retryEndpoint)
           movie = await res.json()
         }
@@ -85,9 +88,8 @@ export class MovieData{
 
   static async getDetails(titleOrId) {
     if (!titleOrId) return null;
-    const apiKey = '22fddf5e';
     const param = /^tt\d+$/.test(titleOrId) ? 'i' : 't';
-    const endpoint = `https://www.omdbapi.com/?${param}=${encodeURIComponent(titleOrId)}&apikey=${apiKey}&plot=full`;
+    const endpoint = `${API_URL}/omdb?${param}=${encodeURIComponent(titleOrId)}&plot=full`;
     
     try {
       const res = await fetch(endpoint);
@@ -115,13 +117,12 @@ export class MovieData{
   }
 
   static async searchList(query){
-    const apiKey = '22fddf5e'
     let searchResults = [];
 
     // Helper to query OMDb pages in parallel
     const runSearch = async (q) => {
       const fetchPage = async (page) => {
-        const endpoint = `https://www.omdbapi.com/?s=${encodeURIComponent(q)}&apikey=${apiKey}&page=${page}`
+        const endpoint = `${API_URL}/omdb?s=${encodeURIComponent(q)}&page=${page}`
         try {
           const res = await fetch(endpoint)
           const data = await res.json()
