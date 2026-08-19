@@ -201,11 +201,13 @@ export class AuthManager {
       if (seed) {
         const url = `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(seed)}`;
         this.selectAvatar(url);
-        
+
         // De-highlight predefined avatars
-        const items = this.avatarModal.querySelectorAll(".predefined-avatar-item");
+        const items = this.avatarModal.querySelectorAll(
+          ".predefined-avatar-item",
+        );
         items.forEach((item) => item.classList.remove("active"));
-        
+
         // Clear upload preview
         this.clearUploadPreview();
       }
@@ -243,7 +245,7 @@ export class AuthManager {
 
     removeUploadBtn.onclick = () => {
       this.clearUploadPreview();
-      
+
       // Select the current user avatar as default again or disable save
       this.selectAvatar(this.appState.currentUser.avatar);
     };
@@ -264,7 +266,7 @@ export class AuthManager {
     // Reset inputs
     document.getElementById("custom-robot-seed").value = "";
     this.clearUploadPreview();
-    
+
     // Disable save button by default (no changes yet)
     document.getElementById("save-avatar-btn").setAttribute("disabled", "true");
 
@@ -273,7 +275,9 @@ export class AuthManager {
 
     // Show current avatar in preview
     const headerImg = document.getElementById("avatar-modal-header-img");
-    const headerPlaceholder = document.getElementById("avatar-modal-header-placeholder");
+    const headerPlaceholder = document.getElementById(
+      "avatar-modal-header-placeholder",
+    );
     const defaultAvatarUrl = `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(this.appState.currentUser.name)}`;
     const initialAvatar = this.selectedAvatarUrl || defaultAvatarUrl;
 
@@ -289,8 +293,18 @@ export class AuthManager {
     const container = document.getElementById("predefined-avatars-list");
     container.innerHTML = "";
 
-    const robotSeeds = ["Felix", "Aneka", "Jack", "Sasha", "Milo", "Coco", "Toby", "Lola"];
-    
+    const robotSeeds = [
+      "Felix",
+      "Aneka",
+      "Jack",
+      "Sasha",
+      "Milo",
+      "Coco",
+      "Toby",
+      "Lola",
+      "Victoria",
+    ];
+
     robotSeeds.forEach((seed) => {
       const url = `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(seed)}`;
       const isActive = this.selectedAvatarUrl === url;
@@ -298,7 +312,7 @@ export class AuthManager {
       const item = document.createElement("div");
       item.className = `predefined-avatar-item ${isActive ? "active" : ""}`;
       item.innerHTML = `<img src="${url}" alt="Robô ${seed}">`;
-      
+
       item.onclick = () => {
         // Highlight active
         const items = container.querySelectorAll(".predefined-avatar-item");
@@ -321,20 +335,24 @@ export class AuthManager {
 
     // Update modal header preview image
     const headerImg = document.getElementById("avatar-modal-header-img");
-    const headerPlaceholder = document.getElementById("avatar-modal-header-placeholder");
+    const headerPlaceholder = document.getElementById(
+      "avatar-modal-header-placeholder",
+    );
     const defaultAvatarUrl = `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(this.appState.currentUser.name)}`;
     const avatarToDisplay = url || defaultAvatarUrl;
 
     headerImg.src = avatarToDisplay;
     headerImg.classList.remove("hide");
     headerPlaceholder.classList.add("hide");
-    
+
     // Enable save button only if changed
     const currentAvatar = this.appState.currentUser.avatar || defaultAvatarUrl;
     if (this.selectedAvatarUrl !== currentAvatar) {
       document.getElementById("save-avatar-btn").removeAttribute("disabled");
     } else {
-      document.getElementById("save-avatar-btn").setAttribute("disabled", "true");
+      document
+        .getElementById("save-avatar-btn")
+        .setAttribute("disabled", "true");
     }
   }
 
@@ -347,11 +365,13 @@ export class AuthManager {
     const reader = new FileReader();
     reader.onload = (e) => {
       const dataUrl = e.target.result;
-      
+
       // Resize image down to max 200x200 pixels to avoid db bloat
       this.resizeImage(dataUrl, (resizedDataUrl) => {
         // Show preview
-        const previewWrapper = document.getElementById("preview-upload-wrapper");
+        const previewWrapper = document.getElementById(
+          "preview-upload-wrapper",
+        );
         const previewImg = document.getElementById("avatar-upload-preview");
         const uploadArea = document.getElementById("avatar-upload-area");
 
@@ -360,7 +380,9 @@ export class AuthManager {
         uploadArea.classList.add("hide");
 
         // De-highlight predefined avatars
-        const items = this.avatarModal.querySelectorAll(".predefined-avatar-item");
+        const items = this.avatarModal.querySelectorAll(
+          ".predefined-avatar-item",
+        );
         items.forEach((item) => item.classList.remove("active"));
         document.getElementById("custom-robot-seed").value = "";
 
@@ -428,7 +450,7 @@ export class AuthManager {
         body: JSON.stringify({
           name: this.appState.currentUser.name,
           email: this.appState.currentUser.email,
-          avatar: avatarUrl
+          avatar: avatarUrl,
         }),
       });
 
