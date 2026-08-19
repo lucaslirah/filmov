@@ -172,6 +172,31 @@
         </div>
 
         <div class="drawer-body">
+          <section class="drawer-section movie-details-section">
+            <button type="button" class="drawer-details-toggle" id="drawer-details-toggle" aria-expanded="false">
+              <div class="toggle-title">
+                <i class="ph ph-film-slate"></i>
+                <span>Sinopse e Elenco</span>
+              </div>
+              <i class="ph ph-caret-down toggle-icon" id="drawer-details-toggle-icon"></i>
+            </button>
+            <div id="drawer-details-content" class="drawer-details-content hide">
+              <div class="details-loading hide" id="drawer-details-loading">
+                <i class="ph ph-spinner ph-spin"></i> Carregando informações...
+              </div>
+              <div class="details-body" id="drawer-details-body">
+                <div class="detail-block">
+                  <h4><i class="ph ph-article"></i> Sinopse</h4>
+                  <p id="drawer-plot" class="detail-text"></p>
+                </div>
+                <div class="detail-block">
+                  <h4><i class="ph ph-users-three"></i> Elenco Principal</h4>
+                  <p id="drawer-actors" class="detail-text"></p>
+                </div>
+              </div>
+            </div>
+          </section>
+
           <section class="drawer-section">
             <h3>Avaliações e Comentários</h3>
             <div id="drawer-reviews-list" class="reviews-list">
