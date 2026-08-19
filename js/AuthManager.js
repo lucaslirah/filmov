@@ -27,9 +27,11 @@ export class AuthManager {
 
     // Close Login modal
     this.loginModal.querySelector(".close-modal").onclick = () => {
+      if (this.isLoading) return;
       this.loginModal.classList.add("hide");
     };
     this.loginModal.onclick = (e) => {
+      if (this.isLoading) return;
       if (e.target === this.loginModal) {
         this.loginModal.classList.add("hide");
       }
@@ -72,12 +74,14 @@ export class AuthManager {
 
       // Click to quick login
       container.querySelector(".saved-account-item").onclick = async () => {
+        if (this.isLoading) return;
         await this.loginUser(savedUser.name, savedUser.email, savedUser.avatar);
       };
 
       // Click to forget saved account
       container.querySelector(".saved-account-forget-btn").onclick = (e) => {
         e.stopPropagation();
+        if (this.isLoading) return;
         localStorage.removeItem("@Filmov:savedUser");
         this.renderSavedAccount();
       };
@@ -88,6 +92,8 @@ export class AuthManager {
   }
 
   async loginUser(name, email, avatar) {
+    if (this.isLoading) return;
+    this.setLoadingState(true);
     try {
       const res = await fetch(`${this.appState.API_URL}/users/login`, {
         method: "POST",
@@ -122,6 +128,53 @@ export class AuthManager {
       await this.appState.load();
     } catch (err) {
       alert(err.message);
+    } finally {
+      this.setLoadingState(false);
+    }
+  }
+
+  setLoadingState(isLoading) {
+    this.isLoading = isLoading;
+
+    const nameInput = document.getElementById("custom-name");
+    const emailInput = document.getElementById("custom-email");
+    const submitBtn = this.customLoginForm.querySelector(".submit-custom-login");
+    const closeBtn = this.loginModal.querySelector(".close-modal");
+    const savedAccountContainer = document.getElementById("saved-account-container");
+
+    if (isLoading) {
+      if (nameInput) nameInput.disabled = true;
+      if (emailInput) emailInput.disabled = true;
+      if (closeBtn) closeBtn.disabled = true;
+      
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        if (!submitBtn.dataset.originalText) {
+          submitBtn.dataset.originalText = submitBtn.innerHTML;
+        }
+        submitBtn.innerHTML = `<i class="ph ph-circle-notch spinner-icon"></i> Entrando...`;
+      }
+
+      if (savedAccountContainer) {
+        savedAccountContainer.style.pointerEvents = "none";
+        savedAccountContainer.style.opacity = "0.6";
+      }
+    } else {
+      if (nameInput) nameInput.disabled = false;
+      if (emailInput) emailInput.disabled = false;
+      if (closeBtn) closeBtn.disabled = false;
+
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        if (submitBtn.dataset.originalText) {
+          submitBtn.innerHTML = submitBtn.dataset.originalText;
+        }
+      }
+
+      if (savedAccountContainer) {
+        savedAccountContainer.style.pointerEvents = "auto";
+        savedAccountContainer.style.opacity = "1";
+      }
     }
   }
 

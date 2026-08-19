@@ -1618,3 +1618,43 @@ tr td.movie-title:hover {
   object-fit: cover;
   border: 2px solid #ffc800;
 }
+
+/* Spinner Animation & Icon styling */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner-icon {
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+
+/* Login Modal Loading States */
+.submit-custom-login:disabled {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: rgba(255, 255, 255, 0.3) !important;
+  cursor: not-allowed;
+  box-shadow: none;
+  filter: none !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+}
+
+.form-group input:disabled {
+  background: rgba(255, 255, 255, 0.02) !important;
+  color: rgba(255, 255, 255, 0.3) !important;
+  border-color: rgba(255, 255, 255, 0.05) !important;
+  cursor: not-allowed;
+}
+
+.close-modal:disabled {
+  color: rgba(255, 255, 255, 0.1) !important;
+  cursor: not-allowed;
+}
