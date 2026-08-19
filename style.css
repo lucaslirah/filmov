@@ -899,6 +899,121 @@ tfoot{
   flex: 1;
 }
 
+/* Movie Details (Synopsis & Cast) Accordion */
+.movie-details-section {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 1.2rem;
+  overflow: hidden;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.movie-details-section:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.drawer-details-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  border: none;
+  padding: 1.4rem 1.6rem;
+  color: var(--fc-primary);
+  font-family: var(--ff-primary);
+  font-size: 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.drawer-details-toggle .toggle-title {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.drawer-details-toggle .toggle-title i {
+  color: var(--bg-color-secondary);
+  font-size: 1.8rem;
+}
+
+.drawer-details-toggle .toggle-icon {
+  font-size: 1.8rem;
+  color: var(--fc-secondary);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease;
+}
+
+.drawer-details-toggle:hover .toggle-icon,
+.drawer-details-toggle:hover .toggle-title span {
+  color: var(--bg-color-secondary);
+}
+
+.drawer-details-toggle.expanded .toggle-icon {
+  transform: rotate(180deg);
+  color: var(--bg-color-secondary);
+}
+
+.drawer-details-content {
+  padding: 0 1.6rem 1.6rem 1.6rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  animation: fadeIn 0.3s ease;
+}
+
+.drawer-details-content.hide {
+  display: none;
+}
+
+.details-loading {
+  padding: 1.6rem 0;
+  text-align: center;
+  color: var(--fc-secondary);
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+}
+
+.details-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+  padding-top: 1.4rem;
+}
+
+.detail-block {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.detail-block h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--fc-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.detail-block h4 i {
+  color: var(--bg-color-secondary);
+  font-size: 1.5rem;
+}
+
+.detail-text {
+  font-size: 1.35rem;
+  color: #d8d8d8;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
 .drawer-section h3 {
   font-size: 1.6rem;
   font-weight: 700;

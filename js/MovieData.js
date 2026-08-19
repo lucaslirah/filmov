@@ -38,12 +38,80 @@ export class MovieData{
         Poster: movie.Poster,
         imdbRating: movie.imdbRating,
         rottenRating: (movie.Ratings || []).find(r => r.Source === "Rotten Tomatoes")?.Value || "N/A",
-        imdbID: movie.imdbID
+        imdbID: movie.imdbID,
+        Plot: movie.Plot && movie.Plot !== "N/A" ? movie.Plot : null,
+        Actors: movie.Actors && movie.Actors !== "N/A" ? movie.Actors : null
       }
     } catch(e) {
       console.error(e)
       return { Title: undefined }
     }
+  }
+
+  static async translateText(text) {
+    if (!text || text === "N/A" || text === "Sinopse não disponível.") return text;
+    try {
+      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=pt-BR&dt=t&q=${encodeURIComponent(text)}`;
+      const res = await fetch(url);
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && Array.isArray(data[0])) {
+          const translated = data[0].map(item => item[0]).filter(Boolean).join('');
+          if (translated.trim()) {
+            return translated;
+          }
+        }
+      }
+    } catch (e) {
+      console.error("Erro na tradução primária da sinopse:", e);
+    }
+
+    // Fallback translation
+    try {
+      const fallbackUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|pt-BR`;
+      const res = await fetch(fallbackUrl);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.responseData && data.responseData.translatedText) {
+          return data.responseData.translatedText;
+        }
+      }
+    } catch (e) {
+      console.error("Erro no fallback de tradução da sinopse:", e);
+    }
+
+    return text;
+  }
+
+  static async getDetails(titleOrId) {
+    if (!titleOrId) return null;
+    const apiKey = '22fddf5e';
+    const param = /^tt\d+$/.test(titleOrId) ? 'i' : 't';
+    const endpoint = `https://www.omdbapi.com/?${param}=${encodeURIComponent(titleOrId)}&apikey=${apiKey}&plot=full`;
+    
+    try {
+      const res = await fetch(endpoint);
+      const data = await res.json();
+      if (data.Response === "True") {
+        let plot = data.Plot && data.Plot !== "N/A" ? data.Plot : "Sinopse não disponível.";
+        if (plot && plot !== "Sinopse não disponível.") {
+          plot = await this.translateText(plot);
+        }
+
+        return {
+          Plot: plot,
+          Actors: data.Actors && data.Actors !== "N/A" ? data.Actors : "Elenco não informado.",
+          Director: data.Director && data.Director !== "N/A" ? data.Director : null,
+          Genre: data.Genre && data.Genre !== "N/A" ? data.Genre : null
+        };
+      }
+    } catch (e) {
+      console.error("Erro ao buscar detalhes do filme no OMDb:", e);
+    }
+    return {
+      Plot: "Sinopse não disponível.",
+      Actors: "Elenco não informado."
+    };
   }
 
   static async searchList(query){

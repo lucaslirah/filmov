@@ -1,3 +1,5 @@
+import { MovieData } from "./MovieData.js";
+
 export class MovieDrawer {
   constructor(appState, view) {
     this.appState = appState;
@@ -7,6 +9,7 @@ export class MovieDrawer {
     this.activeDrawerMovie = null;
     this.activeDrawerMovieNoteId = null;
     this.selectedRating = 0;
+    this.detailsCache = new Map();
 
     this.bindEvents();
   }
@@ -21,6 +24,26 @@ export class MovieDrawer {
         this.movieDrawer.classList.add("hide");
       }
     };
+
+    // Toggle Synopsis & Cast Accordion
+    const toggleBtn = document.getElementById("drawer-details-toggle");
+    const detailsContent = document.getElementById("drawer-details-content");
+
+    if (toggleBtn && detailsContent) {
+      toggleBtn.onclick = () => {
+        const isHidden = detailsContent.classList.contains("hide");
+        if (isHidden) {
+          detailsContent.classList.remove("hide");
+          toggleBtn.classList.add("expanded");
+          toggleBtn.setAttribute("aria-expanded", "true");
+          this.loadMovieDetails();
+        } else {
+          detailsContent.classList.add("hide");
+          toggleBtn.classList.remove("expanded");
+          toggleBtn.setAttribute("aria-expanded", "false");
+        }
+      };
+    }
 
     // Interactive Stars in Drawer Review Form
     const starBtns = this.movieDrawer.querySelectorAll(".star-btn");
@@ -134,16 +157,77 @@ export class MovieDrawer {
     });
   }
 
+  async loadMovieDetails() {
+    if (!this.activeDrawerMovie) return;
+    const imdbId = this.activeDrawerMovie.imdb_id || this.activeDrawerMovie.imdbID || this.activeDrawerMovie.title;
+    
+    const plotElem = document.getElementById("drawer-plot");
+    const actorsElem = document.getElementById("drawer-actors");
+    const loadingElem = document.getElementById("drawer-details-loading");
+    const bodyElem = document.getElementById("drawer-details-body");
+
+    if (this.detailsCache.has(imdbId)) {
+      const details = this.detailsCache.get(imdbId);
+      plotElem.textContent = details.Plot;
+      actorsElem.textContent = details.Actors;
+      loadingElem.classList.add("hide");
+      bodyElem.classList.remove("hide");
+      return;
+    }
+
+    loadingElem.classList.remove("hide");
+    bodyElem.classList.add("hide");
+
+    const details = await MovieData.getDetails(imdbId);
+    if (details) {
+      this.detailsCache.set(imdbId, details);
+      // Ensure drawer is still showing the same movie
+      const currentImdbId = this.activeDrawerMovie ? (this.activeDrawerMovie.imdb_id || this.activeDrawerMovie.imdbID || this.activeDrawerMovie.title) : null;
+      if (currentImdbId === imdbId) {
+        plotElem.textContent = details.Plot;
+        actorsElem.textContent = details.Actors;
+        loadingElem.classList.add("hide");
+        bodyElem.classList.remove("hide");
+      }
+    }
+  }
+
   openDrawer(movie) {
     this.activeDrawerMovie = movie;
     this.activeDrawerMovieNoteId = null;
     this.selectedRating = 0;
+
+    // Reset details accordion state
+    const toggleBtn = document.getElementById("drawer-details-toggle");
+    const detailsContent = document.getElementById("drawer-details-content");
+    const loadingElem = document.getElementById("drawer-details-loading");
+    const bodyElem = document.getElementById("drawer-details-body");
+    const plotElem = document.getElementById("drawer-plot");
+    const actorsElem = document.getElementById("drawer-actors");
+
+    if (toggleBtn && detailsContent) {
+      detailsContent.classList.add("hide");
+      toggleBtn.classList.remove("expanded");
+      toggleBtn.setAttribute("aria-expanded", "false");
+    }
+
+    if (plotElem) plotElem.textContent = "";
+    if (actorsElem) actorsElem.textContent = "";
+    if (loadingElem) loadingElem.classList.add("hide");
+    if (bodyElem) bodyElem.classList.add("hide");
 
     const imdbId = movie.imdb_id || movie.imdbID || movie.title;
     const title = movie.Title || movie.title;
     const year = movie.Year || movie.year;
     const runtime = movie.Runtime || movie.runtime;
     const poster = movie.Poster || movie.poster;
+
+    // Prefetch details in background
+    if (imdbId && !this.detailsCache.has(imdbId)) {
+      MovieData.getDetails(imdbId).then((details) => {
+        if (details) this.detailsCache.set(imdbId, details);
+      });
+    }
 
     // Set poster, title, etc.
     const posterSrc =
