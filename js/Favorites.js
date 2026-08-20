@@ -40,14 +40,16 @@ export class Favorites {
             `${this.API_URL}/movie_notes?user_id=${this.currentUser.id}&is_deleted=0`,
           );
           if (resMy.ok) {
-            this.movieEntries = await resMy.json();
+            const data = await resMy.json();
+            this.movieEntries = data.sort((a, b) => b.id - a.id);
           }
         } else if (this.activeTab === "trash") {
           const resTrash = await fetch(
             `${this.API_URL}/movie_notes?user_id=${this.currentUser.id}&is_deleted=1`,
           );
           if (resTrash.ok) {
-            this.movieEntries = await resTrash.json();
+            const data = await resTrash.json();
+            this.movieEntries = data.sort((a, b) => b.id - a.id);
           }
         }
       } else {
@@ -77,15 +79,19 @@ export class Favorites {
       grouped[imdbId].notes.push(note);
     });
 
-    return Object.values(grouped).map((movie) => {
-      const ratedNotes = movie.notes.filter((n) => n.rating > 0);
-      const totalRating = ratedNotes.reduce((sum, n) => sum + n.rating, 0);
-      movie.avgRating =
-        ratedNotes.length > 0
-          ? (totalRating / ratedNotes.length).toFixed(1)
-          : "0.0";
-      return movie;
-    });
+    return Object.values(grouped)
+      .map((movie) => {
+        const ratedNotes = movie.notes.filter((n) => n.rating > 0);
+        const totalRating = ratedNotes.reduce((sum, n) => sum + n.rating, 0);
+        movie.avgRating =
+          ratedNotes.length > 0
+            ? (totalRating / ratedNotes.length).toFixed(1)
+            : "0.0";
+        // Calculate maxId of notes in this movie to represent the most recent add
+        movie.maxId = Math.max(...movie.notes.map((n) => n.id || 0));
+        return movie;
+      })
+      .sort((a, b) => b.maxId - a.maxId);
   }
 
   getMovieAvgRating(imdbId) {

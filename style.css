@@ -1204,21 +1204,24 @@ tfoot {
 .search-suggestions::-webkit-scrollbar,
 .reviews-list::-webkit-scrollbar,
 .drawer-content::-webkit-scrollbar,
-.avatar-options-container::-webkit-scrollbar {
+.avatar-options-container::-webkit-scrollbar,
+.predefined-avatars::-webkit-scrollbar {
   width: 0.6rem;
 }
 
 .search-suggestions::-webkit-scrollbar-track,
 .reviews-list::-webkit-scrollbar-track,
 .drawer-content::-webkit-scrollbar-track,
-.avatar-options-container::-webkit-scrollbar-track {
+.avatar-options-container::-webkit-scrollbar-track,
+.predefined-avatars::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.1);
 }
 
 .search-suggestions::-webkit-scrollbar-thumb,
 .reviews-list::-webkit-scrollbar-thumb,
 .drawer-content::-webkit-scrollbar-thumb,
-.avatar-options-container::-webkit-scrollbar-thumb {
+.avatar-options-container::-webkit-scrollbar-thumb,
+.predefined-avatars::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.15);
   border-radius: 3px;
 }
@@ -1226,7 +1229,8 @@ tfoot {
 .search-suggestions::-webkit-scrollbar-thumb:hover,
 .reviews-list::-webkit-scrollbar-thumb:hover,
 .drawer-content::-webkit-scrollbar-thumb:hover,
-.avatar-options-container::-webkit-scrollbar-thumb:hover {
+.avatar-options-container::-webkit-scrollbar-thumb:hover,
+.predefined-avatars::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.25);
 }
 
@@ -1399,11 +1403,15 @@ tr td.movie-title:hover {
 
 .predefined-avatars {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1.2rem;
+  max-height: 18rem;
+  overflow-y: auto;
+  padding-right: 0.6rem;
 }
 
 .predefined-avatar-item {
+  min-height: 0;
   aspect-ratio: 1;
   border-radius: 1.2rem;
   border: 2px solid transparent;
@@ -1585,8 +1593,9 @@ tr td.movie-title:hover {
   }
 
   .predefined-avatars {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0.8rem;
+    max-height: 14rem;
   }
 
   .custom-robot-input-group {
@@ -1657,4 +1666,49 @@ tr td.movie-title:hover {
 .close-modal:disabled {
   color: rgba(255, 255, 255, 0.1) !important;
   cursor: not-allowed;
+}
+
+/* List Search Styling */
+.list-search-container {
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+.list-search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 40rem;
+}
+
+.list-search-wrapper .list-search-icon {
+  position: absolute;
+  left: 1.2rem;
+  color: var(--fc-secondary);
+  font-size: 1.8rem;
+  pointer-events: none;
+}
+
+.list-search-wrapper input {
+  width: 100%;
+  padding: 1.2rem 1.2rem 1.2rem 4rem;
+  font-size: 1.4rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  border-radius: 0.8rem;
+  color: var(--fc-primary);
+  transition: all 0.3s ease;
+}
+
+.list-search-wrapper input:focus {
+  outline: none;
+  border-color: var(--bg-color-secondary);
+  background-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 10px rgba(255, 200, 0, 0.15);
+}
+
+.list-search-wrapper input::placeholder {
+  color: var(--fc-secondary);
+  opacity: 0.6;
 }

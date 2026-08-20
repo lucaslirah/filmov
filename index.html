@@ -74,6 +74,18 @@
         </button>
       </nav>
 
+      <div class="list-search-container">
+        <div class="list-search-wrapper">
+          <i class="ph ph-magnifying-glass list-search-icon"></i>
+          <input
+            type="text"
+            id="list-search-input"
+            placeholder="procure na lista de favoritados..."
+            autocomplete="off"
+          />
+        </div>
+      </div>
+
       <table cellspacing="0">
         <thead>
           <tr>
@@ -173,14 +185,25 @@
 
         <div class="drawer-body">
           <section class="drawer-section movie-details-section">
-            <button type="button" class="drawer-details-toggle" id="drawer-details-toggle" aria-expanded="false">
+            <button
+              type="button"
+              class="drawer-details-toggle"
+              id="drawer-details-toggle"
+              aria-expanded="false"
+            >
               <div class="toggle-title">
                 <i class="ph ph-film-slate"></i>
                 <span>Sinopse e Elenco</span>
               </div>
-              <i class="ph ph-caret-down toggle-icon" id="drawer-details-toggle-icon"></i>
+              <i
+                class="ph ph-caret-down toggle-icon"
+                id="drawer-details-toggle-icon"
+              ></i>
             </button>
-            <div id="drawer-details-content" class="drawer-details-content hide">
+            <div
+              id="drawer-details-content"
+              class="drawer-details-content hide"
+            >
               <div class="details-loading hide" id="drawer-details-loading">
                 <i class="ph ph-spinner ph-spin"></i> Carregando informações...
               </div>

@@ -21,6 +21,7 @@ export class FavoritesView {
 
   async init() {
     this.bindTabEvents();
+    this.bindSearchEvents();
 
     // Load initial data
     await this.appState.load();
@@ -33,10 +34,25 @@ export class FavoritesView {
         tabs.forEach((t) => t.classList.remove("active"));
         tab.classList.add("active");
 
+        // Clear list search input on tab switch
+        const searchInput = document.getElementById("list-search-input");
+        if (searchInput) {
+          searchInput.value = "";
+        }
+
         this.appState.activeTab = tab.getAttribute("data-tab");
         await this.appState.load();
       });
     });
+  }
+
+  bindSearchEvents() {
+    const searchInput = document.getElementById("list-search-input");
+    if (searchInput) {
+      searchInput.addEventListener("input", () => {
+        this.update();
+      });
+    }
   }
 
   update() {
@@ -44,12 +60,20 @@ export class FavoritesView {
     this.authManager.updateProfileHeader();
     this.updateTabsStates();
 
-    this.appState.movieEntries.forEach((movie) => {
+    const searchInput = document.getElementById("list-search-input");
+    const query = searchInput ? searchInput.value.trim().toLowerCase() : "";
+
+    const filteredEntries = this.appState.movieEntries.filter((movie) => {
+      const title = (movie.Title || movie.title || "").toLowerCase();
+      return title.includes(query);
+    });
+
+    filteredEntries.forEach((movie) => {
       const row = this.createRow(movie);
       this.tbody.appendChild(row);
     });
 
-    this.showOrHideNoFavorites();
+    this.showOrHideNoFavorites(filteredEntries.length);
   }
 
   updateTabsStates() {
@@ -253,22 +277,28 @@ export class FavoritesView {
     }
   }
 
-  showOrHideNoFavorites() {
+  showOrHideNoFavorites(filteredCount) {
     const noFavorites = this.root.querySelector(".no-favorites");
     if (!noFavorites) return;
 
     const emptyMessage = document.getElementById("empty-message");
+    const searchInput = document.getElementById("list-search-input");
+    const hasSearchQuery = searchInput && searchInput.value.trim().length > 0;
 
-    if (this.appState.movieEntries.length === 0) {
+    if (filteredCount === 0) {
       noFavorites.classList.remove("hide");
 
-      // Set localized empty messages
-      if (this.appState.activeTab === "all") {
-        emptyMessage.textContent = "Nenhum filme favoritado no sistema.";
-      } else if (this.appState.activeTab === "my") {
-        emptyMessage.textContent = "Você não possui nenhum favorito ativo.";
-      } else if (this.appState.activeTab === "trash") {
-        emptyMessage.textContent = "Seu histórico de lixeira está vazio.";
+      if (hasSearchQuery) {
+        emptyMessage.textContent = "Nenhum filme encontrado para a sua busca.";
+      } else {
+        // Set localized empty messages
+        if (this.appState.activeTab === "all") {
+          emptyMessage.textContent = "Nenhum filme favoritado no sistema.";
+        } else if (this.appState.activeTab === "my") {
+          emptyMessage.textContent = "Você não possui nenhum favorito ativo.";
+        } else if (this.appState.activeTab === "trash") {
+          emptyMessage.textContent = "Seu histórico de lixeira está vazio.";
+        }
       }
     } else {
       noFavorites.classList.add("hide");
